@@ -47,6 +47,6 @@ def convert_json_to_csv(json_url, csv_path):
 
 # Example usage
 json_url = 'https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json?includeTimeseries=true&includeCurrentMeasurement=true'
-csv_path = 'D:/data.csv'  # Save to the root directory of the C drive
+csv_path = 'C:/Users/Lenovo/Git_repos/pegel_water_level_analysis/data.csv'  # Save to the root directory of the C drive
 
 convert_json_to_csv(json_url, csv_path)
