@@ -1,7 +1,8 @@
+import os
 import pandas as pd
 import requests
 
-def convert_json_to_csv(json_url, csv_path):
+def convert_json_to_csv(json_url):
     try:
         # Download the JSON data from the URL
         response = requests.get(json_url)
@@ -21,13 +22,38 @@ def convert_json_to_csv(json_url, csv_path):
         df_selected = df[['shortname', 'water.shortname', 'timeseries']]
 
         # Extract the nested data
-        df_selected['timeseries_currentMeasurement_timestamp'] = df_selected['timeseries'].apply(lambda x: x[0]['currentMeasurement']['timestamp'] if len(x) > 0 else None)
-        df_selected['timeseries_currentMeasurement_value'] = df_selected['timeseries'].apply(lambda x: x[0]['currentMeasurement']['value'] if len(x) > 0 else None)
+        df_selected['timeseries_currentMeasurement_timestamp'] = df_selected['timeseries'].apply(
+            lambda x: x[0]['currentMeasurement']['timestamp'] if len(x) > 0 else None
+        )
+        df_selected['timeseries_currentMeasurement_value'] = df_selected['timeseries'].apply(
+            lambda x: x[0]['currentMeasurement']['value'] if len(x) > 0 else None
+        )
+        df_selected['timeseries_unit'] = df_selected['timeseries'].apply(
+            lambda x: x[0]['unit'] if len(x) > 0 else None
+        )
 
         # Rename the columns
-        column_names = ['shortname', 'water_shortname', 'currentMeasurement_timestamp', 'currentMeasurement_value']
-        df_selected = df_selected[['shortname', 'water.shortname', 'timeseries_currentMeasurement_timestamp', 'timeseries_currentMeasurement_value']]
+        column_names = [
+            'shortname',
+            'water_shortname',
+            'currentMeasurement_timestamp',
+            'currentMeasurement_value',
+            'timeseries_unit'
+        ]
+        df_selected = df_selected[[
+            'shortname',
+            'water.shortname',
+            'timeseries_currentMeasurement_timestamp',
+            'timeseries_currentMeasurement_value',
+            'timeseries_unit'
+        ]]
         df_selected.columns = column_names
+
+        # Get the current directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Set the relative path for the CSV file
+        csv_path = os.path.join(current_dir, 'data.csv')
 
         # Convert DataFrame to CSV and save it
         df_selected.to_csv(csv_path, index=False)
@@ -47,6 +73,5 @@ def convert_json_to_csv(json_url, csv_path):
 
 # Example usage
 json_url = 'https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json?includeTimeseries=true&includeCurrentMeasurement=true'
-csv_path = 'C:/Users/Lenovo/Git_repos/pegel_water_level_analysis/data.csv'  # Save to the root directory of the C drive
 
-convert_json_to_csv(json_url, csv_path)
+convert_json_to_csv(json_url)
