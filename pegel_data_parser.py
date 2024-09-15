@@ -59,16 +59,6 @@ def convert_json_to_csv(json_url):
         df_selected.to_csv(csv_path, index=False)
         print(f"CSV file saved successfully to {csv_path}")
 
-        # Filter the DataFrame for values other than 'cm'
-        df_other_units = df_selected[df_selected['timeseries_unit'] != 'cm']
-
-        # Set the relative path for the separate CSV file
-        csv_path_other_units = os.path.join(current_dir, 'data_other_units.csv')
-
-        # Convert DataFrame to CSV and save the separate file
-        df_other_units.to_csv(csv_path_other_units, index=False)
-        print(f"CSV file with other units saved successfully to {csv_path_other_units}")
-
     except requests.exceptions.HTTPError as err:
         print(f"HTTP Error occurred: {err}")
     
